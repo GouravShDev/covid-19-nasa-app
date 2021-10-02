@@ -1,7 +1,12 @@
 import 'package:covid_19_app/core/utils/size_config.dart';
+import 'package:covid_19_app/presentation/blocs/home_bloc/home_bloc.dart';
+import 'package:covid_19_app/presentation/common_widgets/custom_card.dart';
+import 'package:covid_19_app/presentation/pages/home_page/widgets/covid_info_card.dart';
+import 'package:covid_19_app/presentation/pages/home_page/widgets/mask_advisor_card.dart';
 import 'package:covid_19_app/presentation/pages/home_page/widgets/risk_widget.dart';
 import 'package:covid_19_app/providers/custom_theme_props.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
@@ -13,90 +18,60 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  bool temp = true;
+  final List<String> _riskLevels = [
+    'low',
+    'medium',
+    'high',
+  ];
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Center(
-            child: RiskButton(onPressed: () {
-              setState(() {
-                temp = !temp;
-              });
-            }),
-          ),
-          if (!temp)
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  Card(
-                    color: Colors.teal.shade100,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(18.0),
-                      child: Column(
-                        children: [
-                          Text(
-                            'How to protect yourself & others from COVID-19',
-                            style: Theme.of(context).textTheme.headline5,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              SizedBox(
-                                width: 30,
-                              ),
-                              Align(
-                                alignment: Alignment.topLeft,
-                                child: SvgPicture.asset(
-                                  'assets/svg/virus_blue.svg',
-                                  fit: BoxFit.contain,
-                                  height: 80,
-                                ),
-                              ),
-                              Align(
-                                alignment: Alignment.bottomRight,
-                                child: SvgPicture.asset(
-                                  'assets/svg/virus.svg',
-                                  fit: BoxFit.contain,
-                                  height: 100,
-                                ),
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
+    return Center(
+      child: SingleChildScrollView(
+        physics: ClampingScrollPhysics(),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Center(
+              child: RiskButton(
+                  //   onPressed: () {
+                  //   setState(() {
+                  //     temp = !temp;
+                  //   });
+                  // },
                   ),
-                  Positioned(
-                    bottom: -25,
-                    left: 40,
-                    child: Container(
-                      height: 50,
-                      width: 50,
-                      decoration: new BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          Provider.of<CustomThemeProps>(context).boxShadow,
-                        ],
-                      ),
-                      child: IconButton(
-                        icon: Icon(Icons.arrow_forward_rounded),
-                        onPressed: () {},
-                      ),
-                    ),
-                  ),
-                ],
-              ),
             ),
-        ],
+            BlocBuilder<HomeBloc, HomeState>(
+              builder: (context, state) {
+                if (state is HomeLoaded) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Column(
+                      children: [
+                        if (state is HomeLoaded) ...[
+                          Text(
+                            "Your Location have ${_riskLevels[state.prediction]} risk level",
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline6!
+                                .copyWith(fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: 20),
+                          MaskAdvisorCard(
+                            maskInt: state.prediction,
+                          ),
+                          SizedBox(height: 10),
+                        ],
+                        CovidInfoCard(),
+                      ],
+                    ),
+                  );
+                } else {
+                  return Container();
+                }
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

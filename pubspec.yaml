@@ -26,6 +26,7 @@ dependencies:
     sdk: flutter
   flutter_bloc: ^7.3.0
   flutter_svg: ^0.22.0
+  geolocator: ^7.6.2
   http: ^0.13.3
   provider: ^6.0.1
 
@@ -46,6 +47,8 @@ flutter:
   assets:
     - assets/svg/virus.svg
     - assets/svg/virus_blue.svg
+    - assets/svg/mask_n95.svg
+    - assets/svg/mask_surgical.svg
     # - images/a_dot_ham.jpeg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

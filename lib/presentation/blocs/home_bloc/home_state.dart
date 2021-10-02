@@ -7,4 +7,10 @@ class HomeInitial extends HomeState {}
 
 class HomeLoading extends HomeState {}
 
-class HomeLoaded extends HomeState {}
+class HomeLoaded extends HomeState {
+  final int prediction;
+
+  HomeLoaded({required this.prediction});
+}
+
+class HomeError extends HomeState {}

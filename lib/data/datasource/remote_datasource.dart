@@ -8,15 +8,19 @@ class RemoteDataSources {
   final http.Client client;
   RemoteDataSources(this.client);
 
-  // Future<> getCovidData() async {
-  //   final response = await client.get(
-  //       'https://api.covid19api.com/summary');
-  //   if (response.statusCode == 200) {
-  //     return CovidData.fromJson(json.decode(response.body));
-  //   } else {
-  //     throw Exception('Failed to load data');
-  //   }
-  // }
+  Future<int> getCovidData(Position position) async {
+    final data = {
+      'lon': position.longitude.toString(),
+      'lat': position.longitude.toString(),
+    };
+    final response = await client
+        .post(Uri.parse('http://127.0.0.1:8000/predict'), body: data);
+    if (response.statusCode == 200) {
+      return json.decode(response.body)['prediction'];
+    } else {
+      throw Exception('Failed to load data');
+    }
+  }
 
   Future<Weather> getWeatherData(Position position) async {
     final String apiKey = '19717c12b4a603188f4d14cac46c22f3';
@@ -33,7 +37,7 @@ class RemoteDataSources {
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> res = json.decode(response.body);
-      return Weather.fromJson(res['current']['value']);
+      return Weather.fromMap(res['current']);
     } else {
       throw ServerException();
     }

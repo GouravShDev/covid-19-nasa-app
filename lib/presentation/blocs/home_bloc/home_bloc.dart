@@ -16,15 +16,16 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       if (event is GetPredication) {
         emit(HomeLoading());
         try {
-          // await remoteDataSources.getWeatherData(event.position);
+          await remoteDataSources.getWeatherData(event.position);
+          await remoteDataSources.getCovidData(event.position);
         } on ServerException {
           emit(HomeError());
         }
 
-        await Future.delayed(const Duration(milliseconds: 5000), () {
-          final int predication = Random().nextInt(3);
-          emit(HomeLoaded(prediction: predication));
-        });
+        // await Future.delayed(const Duration(milliseconds: 5000), () {
+        final int predication = Random().nextInt(3);
+        emit(HomeLoaded(prediction: predication));
+        // });
       }
     });
   }

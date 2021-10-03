@@ -21,9 +21,9 @@ class Weather {
 
   factory Weather.fromMap(Map<String, dynamic> map) {
     return Weather(
-      temp: map['temp'],
-      pressure: map['pressure'],
-      humidity: map['humidity'],
+      temp: map['temp'] as double,
+      pressure: (map['pressure'] as int).toDouble(),
+      humidity: (map['humidity'] as int).toDouble(),
     );
   }
 

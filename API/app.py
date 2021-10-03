@@ -10,7 +10,12 @@ app = FastAPI()
 pickle_in = open("classifier.pkl","rb")
 classifier=pickle.load(pickle_in)
 
+
 # 3. Index route, opens automatically on http://127.0.0.1:8000
+
+@app.get('/')
+def index():
+    return {'message': 'Hello, World'}
 
 # 3. Expose the prediction functionality, make a prediction from the passed
 #    JSON data and return the predicted Bank Note with the confidence

@@ -22,17 +22,9 @@ def index():
 @app.post('/predict')
 def predict(data:Location):
     data = data.dict()
-    lon=data['lon']
-    lat=data['lat']
-    return {'prediction' : 2}
+    state=data['state']
     # prediction = classifier.predict([[lon,lat,]])
-    # if(prediction[0]>0.5):
-    #     prediction="Fake note"
-    # else:
-    #     prediction="Its a Bank note"
-    # return {
-    #     'prediction': prediction
-    # }
+    return {'prediction' : 2}
 
 # 5. Run the API with uvicorn
 #    Will run on http://127.0.0.1:8000

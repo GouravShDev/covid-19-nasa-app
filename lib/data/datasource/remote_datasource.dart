@@ -10,11 +10,20 @@ class RemoteDataSources {
 
   Future<int> getCovidData(Position position) async {
     final data = {
-      'lon': position.longitude.toString(),
-      'lat': position.longitude.toString(),
+      "lon": position.longitude.toInt(),
+      "lat": position.latitude.toInt()
     };
-    final response = await client
-        .post(Uri.parse('http://127.0.0.1:8000/predict'), body: data);
+    final String stateName = await getStateName(position);
+    final response = await client.post(
+      Uri.parse(
+        'https://covid--predict-api.herokuapp.com/predict',
+      ),
+      headers: {
+        "Accept": "application/json",
+        'Content-type': 'application/json',
+      },
+      body: json.encode(data),
+    );
     if (response.statusCode == 200) {
       return json.decode(response.body)['prediction'];
     } else {
@@ -38,6 +47,28 @@ class RemoteDataSources {
     if (response.statusCode == 200) {
       final Map<String, dynamic> res = json.decode(response.body);
       return Weather.fromMap(res['current']);
+    } else {
+      throw ServerException();
+    }
+  }
+
+  Future<String> getStateName(Position position) async {
+    final String lat = position.latitude.toString();
+    final String lon = position.longitude.toString();
+    final String apiKey = '95f57ceca5b4e6908637420dd6da9f6d';
+    String url =
+        'http://api.positionstack.com/v1/reverse?access_key=$apiKey&query=$lat,$lon';
+    final response = await client.get(
+      Uri.parse(url),
+      headers: {
+        "Accept": "application/json",
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> res = json.decode(response.body);
+      return res['data'][0]['region'];
     } else {
       throw ServerException();
     }
